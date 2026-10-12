@@ -1,0 +1,31 @@
+{
+  "name": "@verora/test-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deterministic Verora test agents: canned, clearly labelled test answers served over agent protocol v1",
+  "author": "Berke (pzzaworks)",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "dev": "tsx src/server.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@verora/sdk": "file:../..",
+    "express": "^5.1.0",
+    "tweetnacl": "^1.0.3",
+    "viem": "^2.47.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.15.3",
+    "tsx": "^4.23.15",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.12.3"
+}
