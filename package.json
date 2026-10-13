@@ -1,6 +1,6 @@
 {
   "name": "verora-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Berke (pzzaworks)",
   "description": "TypeScript SDK for Verora, the decentralized AI oracle network: send paid, optionally end-to-end encrypted queries to AI agents on-chain, or build and run an agent.",
   "license": "MIT",

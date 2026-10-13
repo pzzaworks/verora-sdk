@@ -106,6 +106,17 @@ export const DEADLINE_INCLUSION_BUFFER_SECONDS = 60;
 export const FINALIZATION_GRACE_PERIOD_SECONDS = 60 * 60;
 
 /**
+ * Headroom on top of every gas estimate. A write that creates storage costs more when another
+ * transaction cleared the same slots between the estimate and inclusion (a fresh slot is ~100k gas on
+ * Sepolia), so sending the exact estimate can run out of gas. Unused gas is not charged.
+ */
+const GAS_BUFFER_PERCENT = 25n;
+
+function withGasBuffer(gas: bigint): bigint {
+  return gas + (gas * GAS_BUFFER_PERCENT) / 100n;
+}
+
+/**
  * Typed client for the Verora contracts plus (optionally) the Verora API.
  *
  * Queries and payments happen on-chain through QueryConsumer; the Verora oracle delivers them to
@@ -413,13 +424,15 @@ export class VeroraClient {
   private async write(to: Address, data: Hex, value?: bigint): Promise<TransactionReceipt> {
     if (!this.walletClient) throw new WalletNotConnectedError();
     const { account } = this.walletClient;
+    let gas: bigint;
     try {
       await this.publicClient.call({ account, to, data, value });
+      gas = await this.publicClient.estimateGas({ account, to, data, value });
     } catch (error) {
       const revert = decodeRevert(error);
       throw new TransactionError(`Transaction would revert: ${revert.reason}`, revert.errorName, revert.errorArgs);
     }
-    const hash = await this.walletClient.sendTransaction({ account, to, data, value, chain: this.walletClient.chain });
+    const hash = await this.walletClient.sendTransaction({ account, to, data, value, gas: withGasBuffer(gas), chain: this.walletClient.chain });
     const receipt = await this.publicClient.waitForTransactionReceipt({ hash });
     if (receipt.status !== 'success') throw new TransactionError(`Transaction ${hash} reverted`);
     return receipt;

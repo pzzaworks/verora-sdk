@@ -5,7 +5,9 @@ import {
   encodeErrorResult,
   encodeFunctionResult,
   decodeFunctionData,
+  parseTransaction,
   type Hex,
+  type TransactionSerialized,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { sepolia } from 'viem/chains';
@@ -104,5 +106,50 @@ describe('VeroraClient queries', () => {
     expect(good).toEqual({ agentId, ok: true, text: '42' });
     expect(bad?.ok).toBe(false);
     if (bad && !bad.ok) expect(bad.error).toBeInstanceOf(EncryptionError);
+  });
+});
+
+describe('VeroraClient writes', () => {
+  it('sends with headroom above the gas estimate', async () => {
+    let sentGas: bigint | undefined;
+    const transport = custom(
+      {
+        request: ({ method, params }: { method: string; params?: unknown }) => {
+          switch (method) {
+            case 'eth_chainId':
+              return Promise.resolve(`0x${sepolia.id.toString(16)}`);
+            case 'eth_call':
+              return Promise.resolve('0x');
+            case 'eth_estimateGas':
+              return Promise.resolve('0x186a0'); // 100,000
+            case 'eth_getTransactionCount':
+              return Promise.resolve('0x0');
+            case 'eth_maxPriorityFeePerGas':
+              return Promise.resolve('0x1');
+            case 'eth_getBlockByNumber':
+              return Promise.resolve({ number: '0x10', timestamp: '0x64', baseFeePerGas: '0x1', hash: `0x${'00'.repeat(32)}`, transactions: [] });
+            case 'eth_sendRawTransaction': {
+              const [raw] = params as [Hex];
+              sentGas = parseTransaction(raw as TransactionSerialized).gas;
+              return Promise.resolve(`0x${'cc'.repeat(32)}`);
+            }
+            case 'eth_getTransactionReceipt':
+              return Promise.resolve({ status: '0x1', blockNumber: '0x10', transactionHash: `0x${'cc'.repeat(32)}`, logs: [] });
+            case 'eth_blockNumber':
+              return Promise.resolve('0x10');
+            default:
+              return Promise.reject(new Error(`unexpected ${method}`));
+          }
+        },
+      },
+      { retryCount: 0 },
+    );
+    const client = new VeroraClient({
+      publicClient: createPublicClient({ chain: sepolia, transport }),
+      walletClient: createWalletClient({ account, chain: sepolia, transport }),
+      contracts,
+    });
+    await client.cancelQuery(queryId);
+    expect(sentGas).toBe(125_000n);
   });
 });
