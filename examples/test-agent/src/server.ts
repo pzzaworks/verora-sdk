@@ -19,7 +19,7 @@ import {
   signAgentResponse,
   verifyAgentQueryRequest,
   agentRegistryAbi,
-} from '@verora/sdk';
+} from 'verora-sdk';
 import { createPublicClient, http, isAddressEqual, type Address, type Hex } from 'viem';
 import { buildAnswer } from './answers.js';
 import { ConfigError, loadConfig, type Config, type TestAgent } from './config.js';

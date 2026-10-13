@@ -1,7 +1,7 @@
 # Verora test agents
 #
 # Build context: the verora-sdk repository root (this file lives at examples/test-agent/Dockerfile),
-# because the agent depends on the SDK built from the same repository ("@verora/sdk": "file:../..").
+# because the agent depends on the SDK built from the same repository ("verora-sdk": "file:../..").
 #
 #   docker build -f examples/test-agent/Dockerfile -t verora-test-agent .
 #   docker run --env-file examples/test-agent/.env -p 4102:4102 verora-test-agent

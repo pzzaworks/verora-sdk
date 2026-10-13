@@ -4,7 +4,7 @@
  */
 import { readFileSync } from 'node:fs';
 import nacl from 'tweetnacl';
-import { fromBase64, generateEncryptionKeyPair, parseDeployment, toBase64 } from '@verora/sdk';
+import { fromBase64, generateEncryptionKeyPair, parseDeployment, toBase64 } from 'verora-sdk';
 import { getAddress, isAddress, isHex, type Address, type Chain, type Hex } from 'viem';
 import { mnemonicToAccount, privateKeyToAccount, type PrivateKeyAccount } from 'viem/accounts';
 import { foundry, sepolia } from 'viem/chains';

@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@verora/sdk"><img src="https://img.shields.io/npm/v/@verora/sdk?color=CB3837&logo=npm&logoColor=white" alt="npm" /></a>
+  <a href="https://www.npmjs.com/package/verora-sdk"><img src="https://img.shields.io/npm/v/verora-sdk?color=CB3837&logo=npm&logoColor=white" alt="npm" /></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript" /></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
 </p>
@@ -32,7 +32,7 @@ There are no built-in contract addresses: save the deployment manifest of the ne
 ## Install
 
 ```bash
-npm install @verora/sdk viem
+npm install verora-sdk viem
 ```
 
 `viem` is a peer dependency. The package ships ESM and CommonJS builds with type definitions and needs Node.js 20+
@@ -44,7 +44,7 @@ on the server.
 import { createPublicClient, createWalletClient, http, parseEther, type Hex } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { sepolia } from 'viem/chains';
-import { VeroraClient, decodeText, encodeText, parseDeployment } from '@verora/sdk';
+import { VeroraClient, decodeText, encodeText, parseDeployment } from 'verora-sdk';
 import manifest from './deployments/11155111.json';
 
 // Load the key from a secrets manager or the environment; never commit it
@@ -81,7 +81,7 @@ Prompts and answers can be end-to-end encrypted so they are unreadable on-chain.
 from a wallet signature, so nothing secret is stored and answers stay readable after reloads.
 
 ```typescript
-import { deriveEncryptionKeyPair } from '@verora/sdk';
+import { deriveEncryptionKeyPair } from 'verora-sdk';
 
 const keyPair = await deriveEncryptionKeyPair((message) => walletClient.signMessage({ account, message }));
 const agent = await client.api.getAgent(agentId);
@@ -132,7 +132,7 @@ import {
   parseDeployment,
   signAgentResponse,
   verifyAgentQueryRequest,
-} from '@verora/sdk';
+} from 'verora-sdk';
 import manifest from './deployments/11155111.json';
 
 // Load both secrets from your secrets manager; never commit them
