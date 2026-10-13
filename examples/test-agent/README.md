@@ -18,7 +18,10 @@ agent's on-chain owner, and only then signed with `signAgentResponse`.
 | `GET /agents` | Configured slugs, owner addresses, public keys, and endpoint paths |
 | `GET /health` | Liveness check |
 
-Register each agent on-chain with the endpoint `https://veroraprotocol.com/test-agents/<slug>/query`, from
+Serve the server at the root of its own origin (the hosted instance is `https://agents.veroraprotocol.com`):
+the API probes `GET /health` on the origin of each registered endpoint, so a path-prefixed deployment
+reports every agent as unreachable. Register each agent on-chain with the endpoint
+`https://agents.veroraprotocol.com/<slug>/query`, from
 the wallet whose key is `AGENT_<SLUG>_OWNER_KEY`, and put the agent's public key in its metadata. One owner
 may register several on-chain agents; all of them are answered at that owner's slug.
 
